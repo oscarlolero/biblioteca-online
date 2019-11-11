@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Iniciar sesión</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        html, body {
+            height: 100%;
+        }
+    </style>
+</head>
+<bod
+<div class="d-flex justify-content-center h-100">
+    <div class="card border-light row align-self-center" style="width: 350px">
+        <div class="card-header">Ingresa tus credenciales para continuar</div>
+        <div class="card-body">
+            <% if( typeof loginMessage !== "undefined") { %>
+                <% if(loginMessage.length > 0) { %>
+                    <div class="alert alert-danger alert-dismissible fade show animated pulse" role="alert">
+                        <strong>Error:</strong> <%= loginMessage %>
+                    </div>
+                <% } %>
+            <% } %>
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="username" placeholder="Usuario">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" name="password" placeholder="Contraseña">
+                </div>
+                <input type="submit" class="btn btn-primary btn-block mt-3" value="Iniciar sesión">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

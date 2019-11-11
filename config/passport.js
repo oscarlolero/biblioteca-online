@@ -14,18 +14,10 @@ module.exports = (passport) => {
         usernameField: 'username',
         passwordField: 'password',
         passReqToCallback: true
-    }, function(req, username, inPassword, done) {
-        // db.doc(`admins/${username}`).get().then((userData) => {
-        //     if(userData.exists) {
-        //         if(userData.data().password === inPassword) {
-        //             console.log('Contraseña correcta')
-        //         } else {
-        //             return done(null, false, req.flash('loginMessage', 'Contraseña incorrecta.'));
-        //         }
-        //     } else {
-        //         return done(null, false, req.flash('loginMessage', 'El usuario no existe.'));
-        //     }
-        //     done(null, userData.data().name);
-        // });
+    }, async (req, username, inPassword, done) => {
+        const userDoc = await db.doc(`users/${username}`).get();
+        if(!userDoc.exists) return done(null, false, req.flash('loginMessage', 'El usuario no existe.'));
+        if(userDoc.data().password !== inPassword) return done(null, false, req.flash('loginMessage', 'Contraseña incorrecta.'));
+        done(null, true);
     }));
 };
