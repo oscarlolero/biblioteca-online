@@ -30,5 +30,6 @@ app.use(flash());
 require('./config/passport')(passport);
 //Rutas
 require('./routes/admin')(app, passport);
+require('./routes/estudiantes')(app);
 
 module.exports = app;
