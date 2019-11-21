@@ -31,5 +31,6 @@ require('./config/passport')(passport);
 //Rutas
 require('./routes/admin')(app, passport);
 require('./routes/estudiantes')(app);
+require('./routes/libros')(app);
 
 module.exports = app;

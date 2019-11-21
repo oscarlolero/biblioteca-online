@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido</title>
+    <title>Libros</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -12,6 +12,7 @@
         html, body {
             height: 100%;
         }
+
         .fas {
             cursor: pointer;
         }
@@ -20,23 +21,27 @@
 <body>
 <% include partials/navbar.ejs %>
 <div class="container d-flex justify-content-center">
-    <div class="card mt-4 w-50">
+    <div class="card mt-4 w-75">
         <div class="card-header d-flex justify-content-between">
-            <div>Lista de estudiantes inscritos en la biblioteca</div>
+            <div>Lista de libros registrados en la biblioteca</div>
             <div><i class="fas fa-plus-circle"></i></div>
         </div>
         <table class="table">
             <thead class="thead-light">
             <tr>
-                <th scope="col">Nombre completo</th>
-                <th scope="col">NUA</th>
+                <th scope="col">Nombre del libro</th>
+                <th scope="col">Autor</th>
+                <th scope="col">Edición</th>
+                <th scope="col">Editorial</th>
             </tr>
             </thead>
             <tbody>
-            <% for(let i = 0; i < students.length; i++) { %>
+            <% for(let i = 0; i < books.length; i++) { %>
                 <tr>
-                    <td><%= students[i].full_name %></td>
-                    <td><%= students[i].nua %></td>
+                    <td><%= books[i].name %></td>
+                    <td><%= books[i].author %></td>
+                    <td><%= books[i].edition %></td>
+                    <td><%= books[i].editorial %></td>
                 </tr>
             <% } %>
             </tbody>

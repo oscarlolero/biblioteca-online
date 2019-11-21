@@ -2,20 +2,29 @@ const dbConfig = require('../config/db');
 const db = dbConfig.db;
 
 module.exports = (app) => {
-    app.get('/estudiantes', checkLogin, async (req, res) => {
-        const allStudents = await db.collection('students').listDocuments();
+    app.get('/estudiantes', async (req, res) => {
+        const allStudents = await db.doc('students/studentsList').get();
         res.render('estudiantes', {
-            students: allStudents.map(e => e.id),
+            students: allStudents.data().list,
             page: 'estudiantes'
         });
     });
     app.post('/estudiantes', async (req, res) => {
         try {
-            const student = await db.doc(`students/${req.body.student_name}`).get();
-            if (student.exists) return res.status(400).json({error: 'STUDENT_ALREADY_EXISTS'});
-            await db.collection('students').doc(req.body.student_name).set({
-                nua: req.body.nua
+            const response = await db.doc(`students/studentsList`).get();
+            let studentsArray = response.data().list;
+            const studentIndex = studentsArray.findIndex(student => {
+                return student.nua === req.body.nua;
             });
+            if (studentIndex === 1) {
+                res.status(400).json({error: 'STUDENT_ALREADY_EXISTS'});
+            } else {
+                studentsArray.push({
+                    full_name: req.body.full_name,
+                    nua: req.body.nua
+                });
+                await db.doc('students/studentsList').update({list: studentsArray});
+            }
             res.status(200).send();
         } catch (e) {
             console.error(e);
@@ -24,14 +33,18 @@ module.exports = (app) => {
     });
     app.patch('/estudiantes', async (req, res) => {
         try {
-            const student = await db.doc(`students/${req.body.student_name}`).get();
-            if (!student.exists) return res.status(404).json({error: 'STUDENT_DOESNT_EXISTS'});
-            await Promise.all([
-                db.collection('students').doc(req.body.old_student_name).delete(),
-                db.collection('students').doc(req.body.new_student_name).set({
-                    nua: req.body.nua
-                })
-            ]);
+            const response = await db.doc(`students/studentsList`).get();
+            let studentsArray = response.data().list;
+            const studentIndex = studentsArray.findIndex(student => {
+                return student.nua === req.body.nua;
+            });
+            if (studentIndex === -1) {
+                res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
+            } else {
+                studentsArray[studentIndex].full_name = req.body.new_full_name;
+                studentsArray[studentIndex].nua = req.body.new_nua;
+                await db.doc('students/studentsList').update({list: studentsArray});
+            }
             res.status(200).send();
         } catch (e) {
             console.error(e);
@@ -40,9 +53,17 @@ module.exports = (app) => {
     });
     app.delete('/estudiantes', async (req, res) => {
         try {
-            const student = await db.doc(`students/${req.body.student_name}`).get();
-            if (!student.exists) return res.status(404).json({error: 'STUDENT_DOESNT_EXISTS'});
-            await db.collection('students').doc(req.body.student_name).delete();
+            const response = await db.doc(`students/studentsList`).get();
+            let studentsArray = response.data().list;
+            const studentIndex = studentsArray.findIndex(student => {
+                return student.nua === req.body.nua;
+            });
+            if (studentIndex === -1) {
+                res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
+            } else {
+                const newStudentsArray = studentsArray.filter(student => student.nua !== req.body.nua);
+                await db.doc('students/studentsList').update({list: newStudentsArray});
+            }
             res.status(200).send();
         } catch (e) {
             console.error(e);

@@ -15,7 +15,7 @@ module.exports = (passport) => {
         passwordField: 'password',
         passReqToCallback: true
     }, async (req, username, inPassword, done) => {
-        const userDoc = await db.doc(`users/${username}`).get();
+        const userDoc = await db.doc(`admin/${username}`).get();
         if(!userDoc.exists) return done(null, false, req.flash('loginMessage', 'El usuario no existe.'));
         if(userDoc.data().password !== inPassword) return done(null, false, req.flash('loginMessage', 'Contraseña incorrecta.'));
         done(null, true);
