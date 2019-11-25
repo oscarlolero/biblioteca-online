@@ -16,6 +16,21 @@
         .fas {
             cursor: pointer;
         }
+        tr:hover {
+            transition: 0.5s;
+            background-color: #f1f1f1;
+        }
+        tr:hover .fa-minus-circle {
+            visibility: visible;
+        }
+        .fa-minus-circle {
+            color: rgba(255, 0, 0, 0.45);
+            visibility: hidden;
+        }
+        .fa-minus-circle:hover {
+            color: rgba(255, 0, 0, 0.75);
+            transition: 0.5s;
+        }
     </style>
 </head>
 <body>
@@ -38,10 +53,10 @@
             <tbody>
             <% for(let i = 0; i < books.length; i++) { %>
                 <tr>
-                    <td><%= books[i].name %></td>
+                    <td onclick="editBook(this)" style="cursor: pointer"><%= books[i].title %></td>
                     <td><%= books[i].author %></td>
                     <td><%= books[i].edition %></td>
-                    <td><%= books[i].editorial %></td>
+                    <td class="d-flex justify-content-between"><div><%= books[i].editorial %></div><i class="fas fa-minus-circle mt-1" onclick="saveDeleteBook(this)"></i></td>
                 </tr>
             <% } %>
             </tbody>
@@ -57,8 +72,8 @@
             <div id="modal-body">
                 <form class="container">
                     <div class="form-group">
-                        <label class="col-form-label">Nombre del libro:</label>
-                        <input type="text" class="form-control" id="form-name" required>
+                        <label class="col-form-label">Título del libro:</label>
+                        <input type="text" class="form-control" id="form-title" required>
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Autor:</label>
@@ -81,5 +96,10 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/libro.js"></script>
 </body>
 </html>

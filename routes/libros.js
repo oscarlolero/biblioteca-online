@@ -15,14 +15,13 @@ module.exports = (app) => {
             const response = await booksListRef.get();
             let booksArray = response.data().list;
             const bookIndex = booksArray.findIndex(book => {
-                console.log(book.name === req.body.name);
-                return book.name === req.body.name;
+                return book.title === req.body.title;
             });
             if (bookIndex !== -1) {
-                res.status(400).json({error: 'BOOK_ALREADY_EXISTS'});
+                return res.status(400).json({error: 'BOOK_ALREADY_EXISTS'});
             } else {
                 booksArray.push({
-                    name: req.body.name,
+                    title: req.body.title,
                     author: req.body.author,
                     edition: req.body.edition,
                     editorial: req.body.editorial
@@ -36,16 +35,17 @@ module.exports = (app) => {
         }
     });
     app.patch('/libro', async (req, res) => {
+        console.log(req.body);
         try {
             const response = await booksListRef.get();
             let booksArray = response.data().list;
             const bookIndex = booksArray.findIndex(book => {
-                return book.name === req.body.name;
+                return book.title === req.body.old_title;
             });
             if (bookIndex === -1) {
                 res.status(400).json({error: 'BOOK_DOESNT_EXISTS'});
             } else {
-                booksArray[bookIndex].name = req.body.name;
+                booksArray[bookIndex].title = req.body.title;
                 booksArray[bookIndex].author = req.body.author;
                 booksArray[bookIndex].edition = req.body.edition;
                 booksArray[bookIndex].editorial = req.body.editorial;
@@ -59,15 +59,16 @@ module.exports = (app) => {
     });
     app.delete('/libro', async (req, res) => {
         try {
+            console.log(req.body);
             const response = await booksListRef.get();
             let booksArray = response.data().list;
             const bookIndex = booksArray.findIndex(book => {
-                return book.name === req.body.name;
+                return book.title === req.body.title;
             });
             if (bookIndex === -1) {
                 res.status(400).json({error: 'BOOK_DOESNT_EXISTS'});
             } else {
-                const newBooksArray = booksArray.filter(book => book.name !== req.body.name);
+                const newBooksArray = booksArray.filter(book => book.title !== req.body.title);
                 await booksListRef.update({list: newBooksArray});
             }
             res.status(200).send();
