@@ -9,7 +9,7 @@ module.exports = (app) => {
             page: 'estudiantes'
         });
     });
-    app.post('/estudiantes', async (req, res) => {
+    app.post('/estudiante', async (req, res) => {
         try {
             const response = await db.doc(`students/studentsList`).get();
             let studentsArray = response.data().list;
@@ -31,7 +31,7 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
-    app.patch('/estudiantes', async (req, res) => {
+    app.patch('/estudiante', async (req, res) => {
         try {
             const response = await db.doc(`students/studentsList`).get();
             let studentsArray = response.data().list;
@@ -39,19 +39,21 @@ module.exports = (app) => {
                 return student.nua === req.body.nua;
             });
             if (studentIndex === -1) {
-                res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
+                return res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
             } else {
                 studentsArray[studentIndex].full_name = req.body.new_full_name;
                 studentsArray[studentIndex].nua = req.body.new_nua;
+                console.log(studentsArray);
                 await db.doc('students/studentsList').update({list: studentsArray});
             }
             res.status(200).send();
         } catch (e) {
+            console.log('no');
             console.error(e);
             res.status(500).send();
         }
     });
-    app.delete('/estudiantes', async (req, res) => {
+    app.delete('/estudiante', async (req, res) => {
         try {
             const response = await db.doc(`students/studentsList`).get();
             let studentsArray = response.data().list;
@@ -59,7 +61,7 @@ module.exports = (app) => {
                 return student.nua === req.body.nua;
             });
             if (studentIndex === -1) {
-                res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
+                return res.status(400).json({error: 'STUDENT_DOESNT_EXISTS'});
             } else {
                 const newStudentsArray = studentsArray.filter(student => student.nua !== req.body.nua);
                 await db.doc('students/studentsList').update({list: newStudentsArray});

@@ -24,7 +24,7 @@
     <div class="card mt-4 w-75">
         <div class="card-header d-flex justify-content-between">
             <div>Lista de libros registrados en la biblioteca</div>
-            <div><i class="fas fa-plus-circle"></i></div>
+            <div><i class="fas fa-plus-circle" onclick="addBook()"></i></div>
         </div>
         <table class="table">
             <thead class="thead-light">
@@ -46,6 +46,39 @@
             <% } %>
             </tbody>
         </table>
+    </div>
+</div>
+<div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title"></h5>
+            </div>
+            <div id="modal-body">
+                <form class="container">
+                    <div class="form-group">
+                        <label class="col-form-label">Nombre del libro:</label>
+                        <input type="text" class="form-control" id="form-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Autor:</label>
+                        <input type="text" class="form-control" id="form-author" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Edición:</label>
+                        <input type="text" class="form-control" id="form-edition" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Editorial:</label>
+                        <input type="text" class="form-control" id="form-editorial" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="modal-save">Guardar</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>
