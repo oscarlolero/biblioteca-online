@@ -13,9 +13,9 @@ module.exports = (app, passport) => {
         failureRedirect: '/login',
         failureFlash: true
     }));
-    app.get('/asignaciones', checkLogin, (req, res) => {
-        res.render('asignaciones', {
-            page: 'asignaciones'
+    app.get('/entregas', (req, res) => {
+        res.render('entregas', {
+            page: 'entregas'
         });
     });
 };
