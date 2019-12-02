@@ -2,14 +2,15 @@ const dbConfig = require('../config/db');
 const db = dbConfig.db;
 
 module.exports = (app) => {
-    app.get('/estudiantes', async (req, res) => {
+    app.get('/estudiantes', checkLogin, async (req, res) => {
         const allStudents = await db.doc('students/studentsList').get();
         res.render('estudiantes', {
             students: allStudents.data().list,
             page: 'estudiantes'
         });
     });
-    app.post('/estudiante', async (req, res) => {
+
+    app.post('/estudiante', checkLogin, async (req, res) => {
         try {
             const response = await db.doc(`students/studentsList`).get();
             let studentsArray = response.data().list;
@@ -34,7 +35,8 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
-    app.patch('/estudiante', async (req, res) => {
+
+    app.patch('/estudiante', checkLogin, async (req, res) => {
         try {
             const [responseStudentsList, responseLoansList] = await Promise.all([
                 db.doc(`students/studentsList`).get(),
@@ -63,7 +65,8 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
-    app.delete('/estudiante', async (req, res) => {
+
+    app.delete('/estudiante', checkLogin, async (req, res) => {
         try {
             const response = await db.doc(`students/studentsList`).get();
             let studentsArray = response.data().list;
@@ -85,6 +88,7 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
+
 };
 const checkLogin = (req, res, next) => {
     if (req.isAuthenticated()) {

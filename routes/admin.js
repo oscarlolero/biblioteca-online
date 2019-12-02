@@ -4,7 +4,7 @@ module.exports = (app, passport) => {
     app.get('/login', (req, res) => {
         res.render('login', {loginMessage: req.flash('loginMessage')});
     });
-    app.get('/logout', (req, res) => {
+    app.get('/logout', checkLogin, (req, res) => {
         req.logout();
         res.render('login', {loginMessage: req.flash('loginMessage')});
     });
