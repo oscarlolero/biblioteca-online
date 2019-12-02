@@ -1,5 +1,6 @@
 const dbConfig = require('../config/db');
 const db = dbConfig.db;
+const moment = require('moment');
 
 const booksListRef = db.doc('books/booksList');
 module.exports = (app) => {
@@ -83,10 +84,21 @@ module.exports = (app) => {
             page: 'entregas'
         });
     });
-    app.post('/pendientes', async (req, res) => {
-        const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
-        if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
-        res.status(200).json({due_list: loanDoc.data().dueList});
+    // app.post('/pendientes', async (req, res) => {
+    //     const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
+    //     if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
+    //     res.status(200).json({due_list: loanDoc.data().dueList});
+    // });
+    //App movil
+    app.get('/pendientes', async (req, res) => {
+        const loansDoc = await db.doc(`loans/${req.query.nua}`).get();
+        if(!loansDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
+        const due_list = loansDoc.data().dueList.map(item => {
+            const itemDate = moment(item.expires_on, 'DD-MM-YYYY');
+            item.expired = moment().isBefore(itemDate);
+            return item;
+        });
+        res.status(200).json({due_list: due_list});
     });
     app.post('/entregar', async (req, res) => {
         const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
