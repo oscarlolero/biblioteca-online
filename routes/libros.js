@@ -1,8 +1,35 @@
 const dbConfig = require('../config/db');
 const db = dbConfig.db;
 const moment = require('moment');
-
 const booksListRef = db.doc('books/booksList');
+db.doc('loans/145844').set({
+    dueList: [
+        {
+            author: 'autor',
+            borrowed_on: '21-11-2019',
+            edition: 'edicion',
+            editorial: 'editorial',
+            expires_on: '11-11-2019',
+            title: 'tituloo'
+        },
+        {
+            author: 'autor2',
+            borrowed_on: '21-11-2019',
+            edition: 'edicio2n',
+            editorial: 'editorial2',
+            expires_on: '01-12-2019',
+            title: 'tituloo2'
+        },
+        {
+            author: 'autor2',
+            borrowed_on: '21-11-2019',
+            edition: 'edicio2n',
+            editorial: 'editorial2',
+            expires_on: '03-12-2019',
+            title: 'tituloo3'
+        },
+    ]
+});
 module.exports = (app) => {
     //Libros
     app.get('/libros', async (req, res) => {
@@ -12,6 +39,7 @@ module.exports = (app) => {
             page: 'libros'
         });
     });
+
     app.post('/libro', async (req, res) => {
         try {
             const response = await booksListRef.get();
@@ -36,6 +64,7 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
+
     app.patch('/libro', async (req, res) => {
         try {
             const response = await booksListRef.get();
@@ -58,6 +87,7 @@ module.exports = (app) => {
             res.status(500).send();
         }
     });
+
     app.delete('/libro', async (req, res) => {
         try {
             const response = await booksListRef.get();
@@ -84,27 +114,39 @@ module.exports = (app) => {
             page: 'entregas'
         });
     });
-    // app.post('/pendientes', async (req, res) => {
-    //     const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
-    //     if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
-    //     res.status(200).json({due_list: loanDoc.data().dueList});
-    // });
-    //App movil
+
     app.get('/pendientes', async (req, res) => {
         const loansDoc = await db.doc(`loans/${req.query.nua}`).get();
-        if(!loansDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
+        if(!loansDoc.exists) return res.status(404).json({error: 'NUA_NOT_FOUND'});
         const due_list = loansDoc.data().dueList.map(item => {
             const itemDate = moment(item.expires_on, 'DD-MM-YYYY');
-            item.expired = moment().isBefore(itemDate);
+            item.expired = moment().isAfter(itemDate);
             return item;
         });
         res.status(200).json({due_list: due_list});
     });
+
     app.post('/entregar', async (req, res) => {
-        const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
-        if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
-        const newLoanList = lkasjdlkaalksjd
-        res.status(200).json({due_list: loanDoc.data().dueList});
+        const loanDoc = await db.doc(`loans/${req.query.nua}`).get();
+        if(!loanDoc.exists) return res.status(400).json({error: 'NUA_NOT_FOUND'});
+        const newLoanList = loanDoc.data().dueList.filter(item => item.title !== req.query.title);
+        await db.doc(`loans/${req.query.nua}`).update({dueList: newLoanList});
+        res.status(200).send();
+    });
+
+    app.post('/posponer', async (req, res) => {
+        let newDate;
+        const loanDoc = await db.doc(`loans/${req.query.nua}`).get();
+        if(!loanDoc.exists) return res.status(400).json({error: 'NUA_NOT_FOUND'});
+        const newLoanList = loanDoc.data().dueList.map(item => {
+            if(item.title === req.query.title) {
+                newDate = moment().add(7,'days').format('DD-MM-YYYY');
+                item.expires_on = newDate;
+            }
+            return item;
+        });
+        await db.doc(`loans/${req.query.nua}`).update({dueList: newLoanList});
+        res.status(200).send({new_date: newDate});
     });
 };
 
