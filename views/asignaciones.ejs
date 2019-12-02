@@ -14,13 +14,48 @@
         }
         .fas {
             cursor: pointer;
+            font-size: smaller;
+        }
+        .completed {
+            color: #288036;
+        }
+        tr {
+            transition-property: background-color;
+            transition-duration: 1s;
         }
     </style>
 </head>
 <body>
 <% include partials/navbar.ejs %>
-<div class="container d-flex justify-content-center">
-    <h1>Logged in</h1>
+<div class="container mt-3">
+    <h2>Asignar libros</h2>
+    <hr>
+    <div class="d-flex flex-row">
+        <input type="text" class="form-control w-75 nua-input" id="title" placeholder="Introduzca un título" onkeypress="updateTable()">
+        <input type="text" class="form-control w-25 nua-input ml-2" id="nua" placeholder="Introduzca un NUA válido">
+    </div>
+    <table class="table mt-3">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">Nombre del libro</th>
+            <th scope="col">Autor</th>
+            <th scope="col">Edición</th>
+            <th scope="col">Editorial</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(let i = 0; i < books_list.length; i++) { %>
+            <tr style="display: none">
+                <td class="d-flex d-inline-block"><i class="fas fa-plus mr-3" style="margin-top: 6px" onclick="addBook(this)"></i><div><%= books_list[i].title %></div></td>
+                <td><%= books_list[i].author %></td>
+                <td><%= books_list[i].edition %></td>
+                <td><%= books_list[i].editorial %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
 </div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="js/asignaciones.js"></script>
 </body>
 </html>

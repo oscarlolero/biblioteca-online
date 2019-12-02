@@ -2,34 +2,6 @@ const dbConfig = require('../config/db');
 const db = dbConfig.db;
 const moment = require('moment');
 const booksListRef = db.doc('books/booksList');
-db.doc('loans/145844').set({
-    dueList: [
-        {
-            author: 'autor',
-            borrowed_on: '21-11-2019',
-            edition: 'edicion',
-            editorial: 'editorial',
-            expires_on: '11-11-2019',
-            title: 'tituloo'
-        },
-        {
-            author: 'autor2',
-            borrowed_on: '21-11-2019',
-            edition: 'edicio2n',
-            editorial: 'editorial2',
-            expires_on: '01-12-2019',
-            title: 'tituloo2'
-        },
-        {
-            author: 'autor2',
-            borrowed_on: '21-11-2019',
-            edition: 'edicio2n',
-            editorial: 'editorial2',
-            expires_on: '03-12-2019',
-            title: 'tituloo3'
-        },
-    ]
-});
 module.exports = (app) => {
     //Libros
     app.get('/libros', async (req, res) => {
@@ -148,6 +120,35 @@ module.exports = (app) => {
         await db.doc(`loans/${req.query.nua}`).update({dueList: newLoanList});
         res.status(200).send({new_date: newDate});
     });
+
+    //Asignaciones
+    app.get('/asignaciones', async (req, res) => {
+        const booksDoc = await db.doc('books/booksList').get();
+        res.render('asignaciones', {
+            page: 'asignaciones',
+            books_list: booksDoc.data().list
+        });
+    });
+    app.get('/listalibros', async (req, res) => {
+        const booksDoc = await db.doc('books/booksList').get();
+        res.status(200).json({books_list: booksDoc.data().list});
+    });
+    app.post('/asignar', async (req, res) => {
+        const userLoansDoc = await db.doc(`loans/${req.body.nua}`).get();
+        if(!userLoansDoc.exists) return res.status(404).send();
+        let newLoans = userLoansDoc.data().dueList;
+        newLoans.push({
+            author: req.body.book_data.author,
+            edition: req.body.book_data.edition,
+            editorial: req.body.book_data.editorial,
+            title: req.body.book_data.title,
+            borrowed_on: moment().format('DD-MM-YYYY'),
+            expires_on: moment().add(7,'days').format('DD-MM-YYYY')
+        });
+        await db.doc(`loans/${req.body.nua}`).update({dueList: newLoans});
+        res.status(200).send();
+    });
+
 };
 
 const checkLogin = (req, res, next) => {

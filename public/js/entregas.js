@@ -51,7 +51,6 @@ const postponeBook = async (row) => {
     try {
         const response = await axios.post(`/posponer?nua=${document.getElementById('nua').value.trim()}&title=${title}`, {data:null});
         const rowElement = row.closest('tr');
-        console.log(response.data.new_date);
         rowElement.children[5].innerHTML = response.data.new_date;
         if(rowElement.classList.contains('table-danger')) {
             rowElement.classList.remove('table-danger');

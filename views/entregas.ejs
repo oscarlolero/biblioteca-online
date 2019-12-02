@@ -15,9 +15,6 @@
         .far, .fas {
             cursor: pointer;
         }
-        tr {
-            transition: height 1s;
-        }
     </style>
 </head>
 <body>
@@ -26,7 +23,7 @@
     <h2>Entrega de libros</h2>
     <hr>
     <div class="d-flex flex-row">
-        <input type="text" value="145844" class="form-control w-50 nua-input" id="nua" placeholder="Introduzca un NUA válido">
+        <input type="text" class="form-control w-50 nua-input" id="nua" placeholder="Introduzca un NUA válido">
         <button type="button" class="btn btn-success ml-2" onclick="getDueList()">Buscar</button>
     </div>
     <table class="table mt-3">
