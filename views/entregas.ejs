@@ -24,16 +24,17 @@
     <h2>Entrega de libros</h2>
     <hr>
     <div class="d-flex flex-row">
-        <input type="text" class="form-control w-50" id="nua" placeholder="Introduzca un NUA válido">
-        <button type="button" class="btn btn-success ml-2">Buscar</button>
+        <input type="text" value="145844" class="form-control w-50 nua-input" id="nua" placeholder="Introduzca un NUA válido">
+        <button type="button" class="btn btn-success ml-2" onclick="getDueList()">Buscar</button>
     </div>
-    <table class="table mt-3 invisible">
+    <table class="table mt-3">
         <thead class="thead-light">
         <tr>
             <th scope="col">Nombre del libro</th>
             <th scope="col">Autor</th>
             <th scope="col">Edición</th>
             <th scope="col">Editorial</th>
+            <th scope="col">Pedido el</th>
             <th scope="col">Vence el</th>
             <th scope="col">Acción</th>
         </tr>
@@ -77,6 +78,6 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="js/estudiante.js"></script>
+<script src="js/entregas.js"></script>
 </body>
 </html>

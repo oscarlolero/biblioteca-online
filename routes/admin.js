@@ -13,11 +13,6 @@ module.exports = (app, passport) => {
         failureRedirect: '/login',
         failureFlash: true
     }));
-    app.get('/entregas', (req, res) => {
-        res.render('entregas', {
-            page: 'entregas'
-        });
-    });
 };
 const checkLogin = (req, res, next) => {
     if (req.isAuthenticated()) {

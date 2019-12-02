@@ -3,6 +3,7 @@ const db = dbConfig.db;
 
 const booksListRef = db.doc('books/booksList');
 module.exports = (app) => {
+    //Libros
     app.get('/libros', async (req, res) => {
         const allBooks = await booksListRef.get();
         res.render('libros', {
@@ -35,7 +36,6 @@ module.exports = (app) => {
         }
     });
     app.patch('/libro', async (req, res) => {
-        console.log(req.body);
         try {
             const response = await booksListRef.get();
             let booksArray = response.data().list;
@@ -59,7 +59,6 @@ module.exports = (app) => {
     });
     app.delete('/libro', async (req, res) => {
         try {
-            console.log(req.body);
             const response = await booksListRef.get();
             let booksArray = response.data().list;
             const bookIndex = booksArray.findIndex(book => {
@@ -76,6 +75,24 @@ module.exports = (app) => {
             console.error(e);
             res.status(500).send();
         }
+    });
+
+    //Entregas
+    app.get('/entregas', (req, res) => {
+        res.render('entregas', {
+            page: 'entregas'
+        });
+    });
+    app.post('/pendientes', async (req, res) => {
+        const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
+        if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
+        res.status(200).json({due_list: loanDoc.data().dueList});
+    });
+    app.post('/entregar', async (req, res) => {
+        const loanDoc = await db.doc(`loans/${req.body.nua}`).get();
+        if(!loanDoc.exists) return res.status(200).json({error: 'NUA_NOT_FOUND'});
+        const newLoanList = lkasjdlkaalksjd
+        res.status(200).json({due_list: loanDoc.data().dueList});
     });
 };
 
