@@ -87,7 +87,7 @@ module.exports = (app) => {
         });
     });
 
-    app.get('/pendientes', checkLogin, async (req, res) => {
+    app.get('/pendientes', async (req, res) => {
         const loansDoc = await db.doc(`loans/${req.query.nua}`).get();
         if(!loansDoc.exists) return res.status(404).json({error: 'NUA_NOT_FOUND'});
         const due_list = loansDoc.data().dueList.map(item => {
