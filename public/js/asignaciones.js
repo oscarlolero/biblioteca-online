@@ -41,7 +41,11 @@ const addBook = async (element) => {
 
         input.classList.remove('is-invalid');
     } catch (e) {
-        input.value = '';
-        input.classList.add('is-invalid');
+        if(e.response.status === 404) {
+            input.value = '';
+            input.classList.add('is-invalid');
+        } else {
+            alert('No se puede asignar el mismo libro a un estudiante.');
+        }
     }
 };

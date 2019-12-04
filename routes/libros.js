@@ -90,11 +90,12 @@ module.exports = (app) => {
     app.get('/pendientes', async (req, res) => {
         const loansDoc = await db.doc(`loans/${req.query.nua}`).get();
         if(!loansDoc.exists) return res.status(404).json({error: 'NUA_NOT_FOUND'});
-        const due_list = loansDoc.data().dueList.map(item => {
+        let due_list = loansDoc.data().dueList.map(item => {
             const itemDate = moment(item.expires_on, 'DD-MM-YYYY');
             item.expired = moment().isAfter(itemDate);
             return item;
         });
+        due_list.sort((a,b) => (a.expired < b.expired) ? 1 : -1);
         res.status(200).json({due_list: due_list});
     });
 
@@ -135,10 +136,11 @@ module.exports = (app) => {
         res.status(200).json({books_list: booksDoc.data().list});
     });
 
-    app.post('/asignar', checkLogin, async (req, res) => {
+    app.post('/asignar', async (req, res) => {
         const userLoansDoc = await db.doc(`loans/${req.body.nua}`).get();
         if(!userLoansDoc.exists) return res.status(404).send();
         let newLoans = userLoansDoc.data().dueList;
+        if(newLoans.findIndex(element => element.title === req.body.book_data.title) !== -1) return res.status(400).send();
         newLoans.push({
             author: req.body.book_data.author,
             edition: req.body.book_data.edition,
