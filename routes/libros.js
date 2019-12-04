@@ -136,7 +136,7 @@ module.exports = (app) => {
         res.status(200).json({books_list: booksDoc.data().list});
     });
 
-    app.post('/asignar', async (req, res) => {
+    app.post('/asignar', checkLogin, async (req, res) => {
         const userLoansDoc = await db.doc(`loans/${req.body.nua}`).get();
         if(!userLoansDoc.exists) return res.status(404).send();
         let newLoans = userLoansDoc.data().dueList;
